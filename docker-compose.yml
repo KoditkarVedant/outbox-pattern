@@ -1,0 +1,12 @@
+services:
+  redis:
+    image: redis:7.0.7-bullseye
+    ports:
+      - "6379:6379"
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_HOSTS=redis
+    ports:
+      - "8081:8081"
