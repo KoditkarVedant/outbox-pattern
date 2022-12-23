@@ -9,7 +9,6 @@ builder.Logging.AddConsole();
 
 builder.Services.AddDbContext<OutboxContext>();
 
-builder.Services.AddSingleton<IPeriodicMessagePublisherStore, PeriodicMessagePublisherStore>();
 builder.Services.AddSingleton<IMessagePublisherService, MessagePublisherService>();
 builder.Services.AddSingleton<IMessageLocker, DistributedMessageLocker>();
 
