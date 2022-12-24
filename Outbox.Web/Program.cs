@@ -7,20 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.AddConsole();
 
-builder.Services.AddDbContext<OutboxContext>();
-
-builder.Services.AddSingleton<IMessagePublisherService, MessagePublisherService>();
-builder.Services.AddSingleton<IMessageLocker, DistributedMessageLocker>();
-
-builder.Services.AddTransient<IMessagePublisher, MessagePublisher>();
-builder.Services.AddTransient<IMessageRepository, MessageRepository>();
-
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = builder.Configuration.GetConnectionString("Redis");
-    options.InstanceName = "CacheInstance";
-});
-
+builder.Services.AddOutbox(builder.Configuration);
 builder.Services.AddHostedService<MessageHostedService>();
 
 var app = builder.Build();

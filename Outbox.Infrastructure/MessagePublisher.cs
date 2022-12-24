@@ -9,17 +9,20 @@ public class MessagePublisher : IMessagePublisher
     private readonly ILogger<MessagePublisher> _logger;
     private readonly IMessageRepository _messageRepository;
     private readonly IMessageLocker _messageLocker;
+    private readonly IMessagePublisherClient _messagePublisherClient;
 
     private static readonly JsonSerializerOptions Settings = new() { WriteIndented = true };
 
     public MessagePublisher(
         ILogger<MessagePublisher> logger,
         IMessageRepository messageRepository,
-        IMessageLocker messageLocker)
+        IMessageLocker messageLocker,
+        IMessagePublisherClient messagePublisherClient)
     {
         _logger = logger;
         _messageRepository = messageRepository;
         _messageLocker = messageLocker;
+        _messagePublisherClient = messagePublisherClient;
     }
 
     public async Task PublishPendingMessages(Partition partition)
@@ -50,7 +53,7 @@ public class MessagePublisher : IMessagePublisher
                 await _messageRepository.UpdateMessage(message);
                 _logger.LogWarning("Message Picked \n{MessageJson}", JsonSerializer.Serialize(message, Settings));
 
-                // TODO: Add PublisherClient
+                await _messagePublisherClient.PublishAsync(message);
 
                 message.DeliveryStatus = MessageDeliveryStatus.Sent;
                 message.PublishedDateTime = DateTime.UtcNow;
