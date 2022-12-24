@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Outbox.Extensions.Hosting\Outbox.Extensions.Hosting.csproj" />
     <ProjectReference Include="..\Outbox.Infrastructure\Outbox.Infrastructure.csproj" />
   </ItemGroup>
 

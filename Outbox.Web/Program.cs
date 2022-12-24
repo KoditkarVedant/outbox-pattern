@@ -1,14 +1,14 @@
 using System.Text.Json;
 using Outbox.Core;
+using Outbox.Extensions.Hosting;
 using Outbox.Infrastructure;
-using Outbox.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.AddConsole();
 
 builder.Services.AddOutbox(builder.Configuration);
-builder.Services.AddHostedService<MessageHostedService>();
+builder.Services.AddOutboxHostedService();
 
 var app = builder.Build();
 
