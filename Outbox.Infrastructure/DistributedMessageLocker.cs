@@ -13,26 +13,23 @@ public class DistributedMessageLocker : IMessageLocker
         _cache = cache;
     }
 
-    public async Task<bool> LockMessage(Message message)
+    public ValueTask<bool> LockMessage(Message message)
     {
-        await Task.CompletedTask;
         lock (_cache)
         {
             var valueString = _cache.GetString(message.Id.ToString());
             if (!string.IsNullOrWhiteSpace(valueString))
             {
-                return false;
+                return new ValueTask<bool>(false);
             }
-            else
+
+            var key = message.Id.ToString();
+            var valueBytes = Encoding.UTF8.GetBytes(key);
+            _cache.Set(key, valueBytes, new DistributedCacheEntryOptions()
             {
-                var key = message.Id.ToString();
-                var valueBytes = Encoding.UTF8.GetBytes(key);
-                _cache.Set(key, valueBytes, new DistributedCacheEntryOptions()
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30)
-                });
-                return true;
-            }
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30)
+            });
+            return new ValueTask<bool>(true);
         }
     }
 }

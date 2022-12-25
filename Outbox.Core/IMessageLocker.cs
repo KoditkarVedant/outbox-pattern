@@ -2,5 +2,5 @@
 
 public interface IMessageLocker
 {
-    Task<bool> LockMessage(Message message);
+    ValueTask<bool> LockMessage(Message message);
 }

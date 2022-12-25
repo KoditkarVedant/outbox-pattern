@@ -1,27 +1,14 @@
 using System.Text.Json;
 using Outbox.Core;
+using Outbox.Extensions.Hosting;
 using Outbox.Infrastructure;
-using Outbox.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.AddConsole();
 
-builder.Services.AddDbContext<OutboxContext>();
-
-builder.Services.AddSingleton<IMessagePublisherService, MessagePublisherService>();
-builder.Services.AddSingleton<IMessageLocker, DistributedMessageLocker>();
-
-builder.Services.AddTransient<IMessagePublisher, MessagePublisher>();
-builder.Services.AddTransient<IMessageRepository, MessageRepository>();
-
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = builder.Configuration.GetConnectionString("Redis");
-    options.InstanceName = "CacheInstance";
-});
-
-builder.Services.AddHostedService<MessageHostedService>();
+builder.Services.AddOutbox(builder.Configuration);
+builder.Services.AddOutboxHostedService();
 
 var app = builder.Build();
 
