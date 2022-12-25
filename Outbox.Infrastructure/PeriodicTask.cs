@@ -5,14 +5,14 @@ namespace Outbox.Infrastructure;
 
 public abstract class PeriodicTask<T> : IPeriodicTask
 {
-    protected readonly ILogger<T> Logger;
+    protected readonly ILogger<PeriodicTask<T>> Logger;
 
     public abstract TimeSpan IntervalBetweenExecutions { get; }
     private PeriodicTimer _periodicTimer = null!;
     private Task? _executeTask;
     private CancellationTokenSource? _stoppingCts;
 
-    protected PeriodicTask(ILogger<T> logger)
+    protected PeriodicTask(ILogger<PeriodicTask<T>> logger)
     {
         Logger = logger;
     }
